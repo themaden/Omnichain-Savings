@@ -13,7 +13,9 @@ contract MockAavePool {
         uint256 amount,
         address onBehalfOf,
         uint16 /* referralCode */
-    ) external {
+    )
+        external
+    {
         // Pull funds into this contract
         IERC20(asset).transferFrom(msg.sender, address(this), amount);
 

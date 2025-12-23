@@ -20,7 +20,7 @@ contract DeployScript is Script {
         SourceVault vault = new SourceVault(IERC20(address(usdc)), address(router));
 
         // 3. Vault'a test için biraz para koy (Demo yaparken cüzdan boş görünmesin)
-        usdc.mint(address(vault), 1000 ether); 
+        usdc.mint(address(vault), 1000 ether);
 
         console.log("-----------------------------------------");
         console.log("SourceVault Adresi:", address(vault));

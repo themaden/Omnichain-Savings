@@ -2,17 +2,12 @@
 pragma solidity ^0.8.20;
 
 import {Client} from "@chainlink/contracts/src/v0.8/ccip/libraries/Client.sol";
-import {
-    CCIPReceiver
-} from "@chainlink/contracts/src/v0.8/ccip/applications/CCIPReceiver.sol";
+import {CCIPReceiver} from "@chainlink/contracts/src/v0.8/ccip/applications/CCIPReceiver.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract MockCCIPRouter {
     // Calculate fake fee when transferring funds
-    function getFee(
-        uint64,
-        Client.EVM2AnyMessage memory
-    ) external pure returns (uint256) {
+    function getFee(uint64, Client.EVM2AnyMessage memory) external pure returns (uint256) {
         return 0; // Free for testing
     }
 
@@ -20,7 +15,11 @@ contract MockCCIPRouter {
     function ccipSend(
         uint64, // destinationChainSelector (Irrelevant in test)
         Client.EVM2AnyMessage memory message
-    ) external payable returns (bytes32) {
+    )
+        external
+        payable
+        returns (bytes32)
+    {
         // 1. Decode destination address from message
         address receiver = abi.decode(message.receiver, (address));
 

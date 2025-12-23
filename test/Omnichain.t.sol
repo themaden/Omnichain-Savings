@@ -47,18 +47,12 @@ contract OmnichainTest is Test {
         // --- STEP 2: BRIDGE OPERATION (TRIGGERED BY BOT) ---
         // As owner (bot), we operate the bridge
 
-        console.log(
-            "2. Bot saw high interest on Arbitrum and started bridging..."
-        );
+        console.log("2. Bot saw high interest on Arbitrum and started bridging...");
 
         // Destination chain ID (Mocked as 999)
         uint64 destChainId = 999;
 
-        sourceVault.bridgeToStrategy(
-            destChainId,
-            address(destAdapter),
-            100 ether
-        );
+        sourceVault.bridgeToStrategy(destChainId, address(destAdapter), 100 ether);
 
         // --- STEP 3: RESULT CHECK ---
 
@@ -71,10 +65,6 @@ contract OmnichainTest is Test {
         uint256 investedAmount = aavePool.balances(address(destAdapter));
 
         assertEq(investedAmount, 100 ether);
-        console.log(
-            "4. SUCCESS! Aave Pool balance on destination chain: ",
-            investedAmount / 1e18,
-            "USDC"
-        );
+        console.log("4. SUCCESS! Aave Pool balance on destination chain: ", investedAmount / 1e18, "USDC");
     }
 }

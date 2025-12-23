@@ -13,22 +13,25 @@ contract SourceVault is ERC4626, Ownable {
     // Chainlink CCIP Router Adresi (Mesajı taşıyan kargo şirketi)d
     address public immutable i_router;
 
-    constructor(IERC20 _asset, address _router) 
-        ERC4626(_asset) 
-        ERC20("Omni Savings Share", "osUSD") 
+    constructor(IERC20 _asset, address _router)
+        ERC4626(_asset)
+        ERC20("Omni Savings Share", "osUSD")
         Ownable(msg.sender) // Deploy eden kişi owner olur
+
     {
-        i_router = _router; 
-        
+        i_router = _router;
     }
 
     // --- KRİTİK FONKSİYON ---
     // Bu fonksiyonu bot çağıracak ve parayı diğer zincire yollayacak
     function bridgeToStrategy(
         uint64 _destinationChainSelector, // Hangi zincire gidiyor? (Chainlink ID'si)
-        address _receiver,                // Karşıda kim karşılayacak?
-        uint256 _amount                   // Ne kadar yolluyoruz?
-    ) external onlyOwner {
+        address _receiver, // Karşıda kim karşılayacak?
+        uint256 _amount // Ne kadar yolluyoruz?
+    )
+        external
+        onlyOwner
+    {
         // 1. Router'a parayı çekmesi için izin ver
         IERC20(asset()).approve(i_router, _amount);
 
@@ -44,24 +47,20 @@ contract SourceVault is ERC4626, Ownable {
         });
 
         // Token miktarını ayarla
-        message.tokenAmounts[0] = Client.EVMTokenAmount({
-            token: address(asset()),
-            amount: _amount
-        });
+        message.tokenAmounts[0] = Client.EVMTokenAmount({token: address(asset()), amount: _amount});
 
         // 3. Yolla!
         IRouterClient(i_router).ccipSend{value: 0}( // Not: Gerçekte value (ETH) göndermek gerekir fee için
-            _destinationChainSelector,
-            message
+            _destinationChainSelector, message
         );
     }
 
     // Demo için CCIP Fee hesaplama fonksiyonu (Frontend'de göstermek için)
-    function getFee(
-        uint64 _destinationChainSelector,
-        address _receiver,
-        uint256 _amount
-    ) external view returns (uint256) {
+    function getFee(uint64 _destinationChainSelector, address _receiver, uint256 _amount)
+        external
+        view
+        returns (uint256)
+    {
         Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
             receiver: abi.encode(_receiver),
             data: abi.encode("DEPOSIT"),
@@ -69,11 +68,8 @@ contract SourceVault is ERC4626, Ownable {
             extraArgs: Client._argsToBytes(Client.EVMExtraArgsV1({gasLimit: 200_000})),
             feeToken: address(0)
         });
-        
-        message.tokenAmounts[0] = Client.EVMTokenAmount({
-            token: address(asset()),
-            amount: _amount
-        });
+
+        message.tokenAmounts[0] = Client.EVMTokenAmount({token: address(asset()), amount: _amount});
 
         return IRouterClient(i_router).getFee(_destinationChainSelector, message);
     }
