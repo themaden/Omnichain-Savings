@@ -50,7 +50,7 @@ contract SourceVault is ERC4626, Ownable {
         message.tokenAmounts[0] = Client.EVMTokenAmount({token: address(asset()), amount: _amount});
 
         // 3. Send!
-        IRouterClient(i_router).ccipSend{value: 0}(// Note: In reality, you need to send value (ETH) for fees
+        IRouterClient(i_router).ccipSend{value: 0}( // Note: In reality, you need to send value (ETH) for fees
             _destinationChainSelector, message
         );
     }
